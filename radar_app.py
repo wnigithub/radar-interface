@@ -53,7 +53,7 @@ color: #000000
 
 # Default Page
 
-st.markdown('**Last Update To Duty Lists:** 2021-06-03')
+st.markdown('**Last Update To Duty Lists:** 2022-02-24')
 
 @st.cache
 def create_dct(lst_icao):
@@ -301,7 +301,7 @@ if search_icao:
         
     else:
         st.error('ICAO NOT FOUND: Please check input text for errors.')
-        st.error('Otherwise, please contact Jeff at torger@wni.com or Ben at mielke@wni.com to have ICAO added to master list.')
+        st.error('Otherwise, please contact Jeff at torger@wni.com or Mandy at zhan-m@wni.com to have ICAO added to master list.')
 
 # Create sidebar scroll options
 create_scroll_item(region, 'JGP', dct_jgp, lst_jgp, search_icao)
