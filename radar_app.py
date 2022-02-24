@@ -71,7 +71,7 @@ def create_dct(lst_icao):
             country = soup.find('span', {'class': 'country-name'}).text
             lat = soup.findAll('abbr', {'class': 'latitude'})[0]['title']
             lon = soup.findAll('abbr', {'class': 'longitude'})[0]['title']
-            elev = soup.findAll('td', {'colspan': '2'})[9].text
+            elev = soup.findAll('td', {'colspan': '2'})[10].text
             try:
                 tz = soup.findAll('abbr', {'class': 'tz'})[0]['title']
             except IndexError:
