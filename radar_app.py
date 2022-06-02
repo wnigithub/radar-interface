@@ -37,7 +37,7 @@ search_icao = (ph_ui.text_input('Search ICAO')).upper()
     
 #st.sidebar.title('Select Region 地域選択')
 region = st.sidebar.selectbox('Select Region',
-                              ('------------------------------------>>', 'JGP', 'OK1', 'OK2', 'OK3', 'OK4', 'SG1', 'SG2', 'SG3', 'SG4', 'SGD', 'SJD', 'SJN', 'MASTER LIST'))
+                              ('------------------------------------>>', 'Japan', 'China', 'Philippines','Korea','S/SE Asia', 'ETOPS', 'MASTER LIST'))
 st.markdown(
     """
 <style>
@@ -53,7 +53,7 @@ color: #000000
 
 # Default Page
 
-st.markdown('**Last Update To Duty Lists:** 2022-02-24')
+st.markdown('**Last Update To Duty Lists:** 2021-06-03')
 
 @st.cache
 def create_dct(lst_icao):
@@ -71,7 +71,7 @@ def create_dct(lst_icao):
             country = soup.find('span', {'class': 'country-name'}).text
             lat = soup.findAll('abbr', {'class': 'latitude'})[0]['title']
             lon = soup.findAll('abbr', {'class': 'longitude'})[0]['title']
-            elev = soup.findAll('td', {'colspan': '2'})[10].text
+            elev = soup.findAll('td', {'colspan': '2'})[9].text
             try:
                 tz = soup.findAll('abbr', {'class': 'tz'})[0]['title']
             except IndexError:
@@ -98,19 +98,12 @@ def connect_gs():
     df_master_list = pd.read_csv(r'Duty_Regions_Master_List.csv')
 
     dct = {}
-    dct['jgp'] = [x for x in df_master_list['JGP'] if str(x) != 'nan']
-    dct['ok1'] = [x for x in df_master_list['OK1'] if str(x) != 'nan']
-    dct['ok2'] = [x for x in df_master_list['OK2'] if str(x) != 'nan']
-    dct['ok3'] = [x for x in df_master_list['OK3'] if str(x) != 'nan']
-    dct['ok4'] = [x for x in df_master_list['OK4'] if str(x) != 'nan']
-    dct['sg1'] = [x for x in df_master_list['SG1'] if str(x) != 'nan']
-    dct['sg2'] = [x for x in df_master_list['SG2'] if str(x) != 'nan']
-    dct['sg3'] = [x for x in df_master_list['SG3'] if str(x) != 'nan']
-    dct['sg4'] = [x for x in df_master_list['SG4'] if str(x) != 'nan']
-    dct['sgd'] = [x for x in df_master_list['SGD'] if str(x) != 'nan']
-    dct['sja'] = [x for x in df_master_list['SJA'] if str(x) != 'nan']
-    dct['sjd'] = [x for x in df_master_list['SJD'] if str(x) != 'nan']
-    dct['sjn'] = [x for x in df_master_list['SJN'] if str(x) != 'nan']
+    dct['jpn'] = [x for x in df_master_list['JPN'] if str(x) != 'nan']
+    dct['chn'] = [x for x in df_master_list['CHN'] if str(x) != 'nan']
+    dct['phn'] = [x for x in df_master_list['PHN'] if str(x) != 'nan']
+    dct['kor'] = [x for x in df_master_list['KOR'] if str(x) != 'nan']
+    dct['asn'] = [x for x in df_master_list['ASN'] if str(x) != 'nan']
+    dct['etp'] = [x for x in df_master_list['ETP'] if str(x) != 'nan']
     dct['master'] = [x for x in df_master_list['MASTER'] if str(x) != 'nan']
 
     return dct
@@ -223,7 +216,8 @@ def create_scroll_item(region, duty, dct, lst, search_icao):
     if region == duty:
         i = 0
         while i <= len(dct)-1:
-            cols = st.sidebar.beta_columns([.5,.75,1,1])
+        ##debug    cols = st.sidebar.columns([.5,.75,1,1])
+            cols =  st.siderbar.columns([.5,.75,1,1])
             cols[0].markdown(f'**{list(dct.keys())[i]}**')
             if cols[1].button('Radar', key=i+10000):
                 radar_button(lst[i], dct)
@@ -239,7 +233,8 @@ def create_scroll_item(region, duty, dct, lst, search_icao):
 def create_search_item(search_icao, dct):
     
     
-    cols = st.sidebar.beta_columns([.5,.75,1,1])
+    ## debugcols = st.sidebar.columns([.5,.75,1,1])
+    cols = st.columns([.5,.75,1,1])
     cols[0].markdown(f'**{search_icao}**')
     if cols[1].button('Radar'):
         radar_button(search_icao, dct)
@@ -255,35 +250,21 @@ def create_search_item(search_icao, dct):
 dct_duty = connect_gs()
 
 # Build duty lists
-lst_jgp = dct_duty.get('jgp')
-lst_ok1 = dct_duty.get('ok1')
-lst_ok2 = dct_duty.get('ok2')
-lst_ok3 = dct_duty.get('ok3')
-lst_ok4 = dct_duty.get('ok4')
-lst_sg1 = dct_duty.get('sg1')
-lst_sg2 = dct_duty.get('sg2')
-lst_sg3 = dct_duty.get('sg3')
-lst_sg4 = dct_duty.get('sg4')
-lst_sgd = dct_duty.get('sgd')
-lst_sja = dct_duty.get('sja')
-lst_sjd = dct_duty.get('sjd')
-lst_sjn = dct_duty.get('sjn')
+lst_jpn = dct_duty.get('jpn')
+lst_chn = dct_duty.get('chn')
+lst_asn = dct_duty.get('asn')
+lst_phn = dct_duty.get('phn')
+lst_kor = dct_duty.get('kor')
+lst_etp = dct_duty.get('etp')
 lst_master = dct_duty.get('master')
 
 # Build the dictionaries
-dct_jgp = create_dct(lst_jgp)
-dct_ok1 = create_dct(lst_ok1)
-dct_ok2 = create_dct(lst_ok2)
-dct_ok3 = create_dct(lst_ok3)
-dct_ok4 = create_dct(lst_ok4)
-dct_sg1 = create_dct(lst_sg1)
-dct_sg2 = create_dct(lst_sg2)
-dct_sg3 = create_dct(lst_sg3)
-dct_sg4 = create_dct(lst_sg4)
-dct_sgd = create_dct(lst_sgd)
-# dct_sja = create_dct(lst_sja)
-dct_sjd = create_dct(lst_sjd)
-dct_sjn = create_dct(lst_sjn)
+dct_jpn = create_dct(lst_jpn)
+dct_chn = create_dct(lst_chn)
+dct_asn = create_dct(lst_asn)
+dct_phn = create_dct(lst_phn)
+dct_kor = create_dct(lst_kor)
+dct_etp = create_dct(lst_etp)
 dct_master = create_dct(lst_master)
 
 if search_icao:
@@ -301,21 +282,16 @@ if search_icao:
         
     else:
         st.error('ICAO NOT FOUND: Please check input text for errors.')
-        st.error('Otherwise, please contact Jeff at torger@wni.com or Mandy at zhan-m@wni.com to have ICAO added to master list.')
+        st.error('Otherwise, please contact Jeff at torger@wni.com or Ben at mielke@wni.com to have ICAO added to master list.')
 
 # Create sidebar scroll options
-create_scroll_item(region, 'JGP', dct_jgp, lst_jgp, search_icao)
-create_scroll_item(region, 'OK1', dct_ok1, lst_ok1, search_icao)
-create_scroll_item(region, 'OK2', dct_ok2, lst_ok2, search_icao)
-create_scroll_item(region, 'OK3', dct_ok3, lst_ok3, search_icao)
-create_scroll_item(region, 'OK4', dct_ok4, lst_ok4, search_icao)
-create_scroll_item(region, 'SG1', dct_sg1, lst_sg1, search_icao)
-create_scroll_item(region, 'SG2', dct_sg2, lst_sg2, search_icao)
-create_scroll_item(region, 'SG3', dct_sg3, lst_sg3, search_icao)
-create_scroll_item(region, 'SG4', dct_sg4, lst_sg4, search_icao)
-create_scroll_item(region, 'SGD', dct_sgd, lst_sgd, search_icao)
-create_scroll_item(region, 'SJD', dct_sjd, lst_sjd, search_icao)
-create_scroll_item(region, 'SJN', dct_sjn, lst_sjn, search_icao)
+# create_scroll_item(region, 'JGP', dct_jgp, lst_jgp, search_icao)
+create_scroll_item(region, 'Japan', dct_jpn, lst_jpn, search_icao)
+create_scroll_item(region, 'China', dct_chn, lst_chn, search_icao)
+create_scroll_item(region, 'Philippines', dct_phn, lst_phn, search_icao)
+create_scroll_item(region, 'Korea', dct_kor, lst_kor, search_icao)
+create_scroll_item(region, 'S/SE Asia', dct_asn, lst_asn, search_icao)
+create_scroll_item(region, 'ETOPS', dct_etp, lst_etp, search_icao)
 create_scroll_item(region, 'MASTER LIST', dct_master, lst_master, search_icao)
 
 
